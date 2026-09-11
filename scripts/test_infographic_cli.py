@@ -77,6 +77,10 @@ class CanvasMathTests(unittest.TestCase):
         asset = cli.SKILL_ROOT / "cases" / "assets" / "harness-action-guide-01.png"
         self.assertEqual(cli.png_size(asset), (2160, 2880))
 
+    def test_device_pixel_snapping_keeps_capture_exact(self):
+        for value in (4188.0469, 1440.0, 1234.567, 5738.999):
+            snapped = cli.snap_to_device_pixels(value, 2)
+            self.assertEqual(round(snapped * 2), round(value * 2), value)
 
 class TemplateAssemblyTests(unittest.TestCase):
     def test_every_template_renders_without_leftover_tokens(self):

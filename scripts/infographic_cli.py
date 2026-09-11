@@ -664,6 +664,16 @@ def open_card_page(page, html_path: Path, width: int, height: int, scale: int) -
     page.wait_for_timeout(60)
 
 
+def snap_to_device_pixels(value: float, scale: int) -> float:
+    """Snap a CSS length onto the device-pixel grid.
+
+    A `long` card ends on a fractional height; an element screenshot rounds that box up
+    to a whole CSS pixel, which then misses round(height × scale) by up to one CSS pixel.
+    Capturing an explicitly snapped clip keeps the bitmap exactly at the audited size.
+    """
+    return round(value * scale) / scale
+
+
 def cmd_render(args: argparse.Namespace) -> int:
     sync_playwright = require_playwright()
     html_path = Path(args.input).expanduser()
@@ -690,13 +700,17 @@ def cmd_render(args: argparse.Namespace) -> int:
             raise SystemExit("no [data-card] element to capture")
         page.set_viewport_size({"width": args.width, "height": int(box["height"]) + 40})
         page.wait_for_timeout(60)
-        page.locator("[data-card]").screenshot(path=str(output))
+        clip = {
+            key: snap_to_device_pixels(box[key], args.scale)
+            for key in ("x", "y", "width", "height")
+        }
+        page.screenshot(path=str(output), clip=clip)
         browser.close()
 
     width_px, height_px = png_size(output)
     expected = (int(round(box["width"] * args.scale)), int(round(box["height"] * args.scale)))
-    # A `long` card has a fractional height: the element box and the captured bitmap can
-    # differ by one device pixel, so allow 1px and flag anything larger.
+    # The clip is snapped to the device-pixel grid, so the bitmap should match exactly;
+    # keep a 1px guard for browser rounding.
     ok = all(abs(actual - want) <= 1 for actual, want in zip((width_px, height_px), expected))
     report = {
         "status": "rendered" if ok else "size_mismatch",

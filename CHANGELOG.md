@@ -8,6 +8,7 @@
   系列只保留用户显式要求多张时的路径
 - `long_height` 从上限警告改为信息项：单卡不设高度上限，审计只记录实际高度与约合屏数
 - `bar_order` 改为按 `.chart` 分组分别校验倒序，支持长卡里的「总览 + 分领域小节」
+- `render` 把截图框对齐到设备像素网格：长卡的小数高度不再产生 1–2 设备像素的尺寸偏差
 - docs：SKILL、README、reading standard、series-and-export、template-grammar、spec-schema 同步单卡契约
 
 ## [0.9.1] - 2026-09-11
