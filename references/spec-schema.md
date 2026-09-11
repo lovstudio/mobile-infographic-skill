@@ -15,7 +15,7 @@
 
 | 属性 | 含义 | audit 后果 |
 | --- | --- | --- |
-| `data-claim` | 这张卡唯一的结论 | 数量必须为 1，否则 critical |
+| `data-claim` | 这张卡唯一的结论，写在 claim 行上（标题不挂 `data-claim`） | 数量必须为 1，否则 critical |
 | `data-role` | `title`、`value`、`claim`、`body`、`label`、`note`、`source` | 决定字号下限与行宽上限 |
 | `data-source-ref` | 证据来源 ID | 每张卡至少 1 处 |
 | `data-encoding` | 该元素用位置、长度、颜色、形状或顺序表达什么 | 必须位于带 `data-source-ref` 的元素内 |
@@ -59,7 +59,7 @@
 | `bar_order` | error | 每个 `.chart` 分组内部条形按数值倒序 |
 | `bar_value` | error | 每行条形的数值可解析（以数字开头，单位写在数字后） |
 | `long_height` | warning | `long` 单卡只记录高度与约合屏数，不设上限 |
-| `title_is_thesis` | warning | 标题是判断句而不是数字复述 |
+| `title_is_subject` | warning | 标题写明作用或主题，不能只有数字或符号 |
 | `source_hygiene` | error | 卡面不含内部路径、库表名与账号标识 |
 
 ## 渲染契约

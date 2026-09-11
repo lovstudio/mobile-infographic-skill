@@ -54,7 +54,7 @@ def good_measurement(**overrides):
         "attribution": "Powered by · lovstudio.ai/skills/mobile-infographic",
         "page_mark": "1/3",
         "visible_text_length": 120,
-        "title": "标题",
+        "title": "信息图主题示例",
     }
     measurement.update(overrides)
     return measurement
@@ -103,6 +103,8 @@ class TemplateAssemblyTests(unittest.TestCase):
             self.assertIn('data-ratio="3:4"', html)
             self.assertIn('data-series-size="3"', html)
             self.assertEqual(html.count("data-claim"), 1, template)
+            self.assertRegex(html, r'class="claim"[^>]*data-claim')
+            self.assertNotRegex(html, r'card-title[^>]*data-claim')
             self.assertIn("data:image/png;base64,", html)
 
     def test_long_ratio_leaves_height_to_content(self):
@@ -341,6 +343,14 @@ class AuditScoringTests(unittest.TestCase):
         ])
         checks = self.audit(measurement)
         self.assertEqual(checks["bar_value"]["status"], "fail")
+
+    def test_bare_number_title_fails(self):
+        checks = self.audit(good_measurement(title="44 起"))
+        self.assertEqual(checks["title_is_subject"]["status"], "fail")
+
+    def test_subject_title_passes(self):
+        checks = self.audit(good_measurement(title="七类 AI 滥用与蒸馏指控"))
+        self.assertEqual(checks["title_is_subject"]["status"], "pass")
 
     def test_image_size_mismatch_fails(self):
         checks = self.audit(good_measurement(), image_px=(1080, 1440))

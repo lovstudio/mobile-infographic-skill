@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.12.0] - 2026-09-11
+
+### Changed
+
+- 标题契约：标题只写这张图的作用或主题，判断与结论归 claim 行；`data-claim` 从标题移到 claim 行
+- `title_is_thesis` 换成 `title_is_subject`：只拦截没有主题信息（纯数字/符号）的标题，不再要求判断句
+- `step-strip` 模板补 claim 行；七套模板统一「标题不挂 data-claim」
+- docs：SKILL 红线、README、模板骨架与 spec-schema 同步新的标题与 claim 契约
+
 ## [0.11.0] - 2026-09-11
 
 ### Changed

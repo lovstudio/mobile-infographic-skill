@@ -22,7 +22,7 @@
 
 ```text
 eyebrow（这张卡在系列中的位置）
-title（读者 5 秒内能读到的主语）
+title（这张图的作用或主题，不写判断句）
 claim（这张卡唯一的结论）
 body（证据、依据、口径、来源）
 footer（Logo · 署名 · 页码）

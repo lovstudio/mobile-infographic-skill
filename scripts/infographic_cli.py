@@ -650,7 +650,7 @@ MEASURE_JS = r"""
     attribution: attribution ? attribution.textContent.trim() : '',
     page_mark: pageMark ? pageMark.textContent.trim() : '',
     visible_text_length: card.innerText.replace(/\s+/g, '').length,
-    title: (card.querySelector('[data-claim]') || {}).innerText || '',
+    title: (card.querySelector('[data-role="title"]') || {}).innerText || '',
   };
 }
 """
@@ -887,13 +887,16 @@ def audit_measurements(m: dict[str, Any], ratio_expected: tuple[int, int] | None
               if footer_ok else f"Logo={logo}")
 
     title_text = (m.get("title") or "").strip()
-    has_number = bool(re.search(r"\d", title_text))
-    judgment_cues = ("应该", "必须", "值得", "才是", "不是", "而是", "其实", "真正",
-                     "反而", "意味着", "只能", "更", "最", "成了", "正在", "决定")
-    add_issue(checks, "title_is_thesis", "warning",
-              not has_number or any(cue in title_text for cue in judgment_cues),
-              "标题是判断句" if not has_number or any(cue in title_text for cue in judgment_cues)
-              else f"标题像事实陈述「{title_text[:24]}」：信息图标题应给出观点或主题，数字留给图表")
+    # 标题只写这张图的作用或主题；这里只保证它不是纯数字/符号或空标题。
+    title_units = 0.0
+    for char in title_text:
+        if not char.strip():
+            continue
+        title_units += 1.0 if ord(char) > 0x2E80 else 0.55
+    add_issue(checks, "title_is_subject", "warning", title_units >= 4,
+              "标题写清了这张图的作用或主题" if title_units >= 4 else
+              f"标题「{title_text[:24]}」缺少主题信息：只写数字或符号不算标题，"
+              "作用或主题要写清楚")
 
     sensitive = ("db_storage", "sqlcipher", ".db", "wxid_", "/Users/", "~/Library", "Msg_")
     leaked = [entry for entry in m["text_entries"]
