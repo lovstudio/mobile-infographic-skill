@@ -11,7 +11,7 @@ depends_on:
   - lov-branding-consistency
 metadata:
   author: skill-publisher
-  version: "0.14.0"
+  version: "0.15.0"
   card_standard: lovstudio/skill-card/v1
   content_class: microcopy
   tags:
@@ -115,6 +115,8 @@ sibling Skill that is not shipped with this source.
 9. **长卡优先用编码，不堆段落。** 先找更高密度的可视化：名单行、矩阵、小倍数、关键数字块、
    流程条带；案例级信息用一行一个名字的紧凑名单，只有章级要点才写句子。同样信息量尽量压进
    更短的图——把每个案例写成一段是最后手段，不是默认写法。
+   需要真正的图表库（D3 等）时读 [`references/charts.md`](references/charts.md)：
+   库要内联、文字留在 HTML 层、颜色与角度要有 `data-encoding`。
 
 ## 对外可见红线（强制）
 

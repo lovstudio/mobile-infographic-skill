@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0] - 2026-09-11
+
+### Added
+
+- `references/charts.md`：在卡片里使用 D3 等图表库的工程约定——库内联离线渲染、图形与文字分层
+  （SVG 只画形状，标签留 HTML 层）、颜色与角度编码写进 `data-encoding`
+
 ## [0.14.0] - 2026-09-11
 
 ### Changed
