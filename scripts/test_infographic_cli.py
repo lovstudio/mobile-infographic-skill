@@ -352,6 +352,10 @@ class AuditScoringTests(unittest.TestCase):
         checks = self.audit(good_measurement(title="七类 AI 滥用与蒸馏指控"))
         self.assertEqual(checks["title_is_subject"]["status"], "pass")
 
+    def test_filler_title_fails(self):
+        checks = self.audit(good_measurement(title="七类 AI 滥用要点速览"))
+        self.assertEqual(checks["title_filler"]["status"], "fail")
+
     def test_image_size_mismatch_fails(self):
         checks = self.audit(good_measurement(), image_px=(1080, 1440))
         self.assertEqual(checks["image_size"]["status"], "fail")

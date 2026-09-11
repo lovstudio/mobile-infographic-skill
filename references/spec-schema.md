@@ -60,6 +60,7 @@
 | `bar_value` | error | 每行条形的数值可解析（以数字开头，单位写在数字后） |
 | `long_height` | warning | `long` 单卡只记录高度与约合屏数，不设上限 |
 | `title_is_subject` | warning | 标题写明作用或主题，不能只有数字或符号 |
+| `title_filler` | warning | 标题不含「要点／速览／一图读完」这类通用废话 |
 | `source_hygiene` | error | 卡面不含内部路径、库表名与账号标识 |
 
 ## 渲染契约

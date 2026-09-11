@@ -897,6 +897,13 @@ def audit_measurements(m: dict[str, Any], ratio_expected: tuple[int, int] | None
               "标题写清了这张图的作用或主题" if title_units >= 4 else
               f"标题「{title_text[:24]}」缺少主题信息：只写数字或符号不算标题，"
               "作用或主题要写清楚")
+    filler = ("一图读完", "一图看懂", "一图读懂", "一图速览", "要点全览", "要点速览",
+              "速览", "全览", "干货", "必读", "建议收藏")
+    filler_hits = [word for word in filler if word in title_text]
+    add_issue(checks, "title_filler", "warning", not filler_hits,
+              "标题没有通用废话" if not filler_hits else
+              f"标题含通用废话「{'、'.join(filler_hits)}」：这类词放在任何信息图上都成立，"
+              "要么改成具体主题，要么写清给谁看、回答什么问题")
 
     sensitive = ("db_storage", "sqlcipher", ".db", "wxid_", "/Users/", "~/Library", "Msg_")
     leaked = [entry for entry in m["text_entries"]

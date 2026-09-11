@@ -11,7 +11,7 @@ depends_on:
   - lov-branding-consistency
 metadata:
   author: skill-publisher
-  version: "0.12.0"
+  version: "0.13.0"
   card_standard: lovstudio/skill-card/v1
   content_class: microcopy
   tags:
@@ -83,9 +83,11 @@ sibling Skill that is not shipped with this source.
 
 一张信息图是**一个判断**，不是一份清单。排版前先固定这四件事：
 
-1. **标题只说明这张图是什么：作用或主题，二选一，不写判断句。**
-   - 作用式：一句话讲清读者拿这张图能做什么，例如「一图读完 XX 报告的七类风险」。
-   - 主题式：直接写内容主题，例如「十座未来城市的市政构想」。
+1. **标题只说明这张图是什么：作用或主题，二选一，不写判断句，也不写废话。**
+   - 主题式（默认）：直接写这张图讲的主题，例如「十座未来城市的市政构想」。
+   - 作用式：只在能给出真实信息时用——写清给谁看、回答什么问题、覆盖什么范围，例如
+     「给新成员的 90 天上手地图」；「要点」「速览」「全览」「一图读完」「一图看懂」这类
+     放在任何信息图上都成立的话是废话，`audit` 的 `title_filler` 会拦截。
    - 判断与结论一律写在 `claim` 行（唯一的 `data-claim` 在那一句上），标题不承担论证；
      标题里也不放「最／才／才是／其实／真正」这类论断词，不写「44 起案例里…」这种统计开头。
    - 标题里不要只有数字或符号；`audit` 的 `title_is_subject` 会拦截没有主题信息的标题。
