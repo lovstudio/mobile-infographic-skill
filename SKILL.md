@@ -11,7 +11,7 @@ depends_on:
   - lov-branding-consistency
 metadata:
   author: skill-publisher
-  version: "0.16.0"
+  version: "0.17.0"
   card_standard: lovstudio/skill-card/v1
   content_class: microcopy
   tags:
@@ -116,6 +116,8 @@ sibling Skill that is not shipped with this source.
    更短的图——把每个案例写成一段是最后手段，不是默认写法。
    需要真正的图表库（D3 等）时读 [`references/charts.md`](references/charts.md)：
    库要内联、文字留在 HTML 层、颜色与角度要有 `data-encoding`。
+   长卡的默认顺序：**关键数字 → 构成与名单 → 时间线 → 手法/流程 → 专题**；同一个信息不要拆成
+   两节（例如构成图与全名单合成一节），图表要带引线标注而不是留一列图例。
 10. **不写作者总结与个人观点。** 正文只放来源的事实、数字与口径；`data-claim` 行是可选的
     （最多一条），只有来源本身有一句必须原样呈现的结论时才用，否则不写。小节副标题不要复述
     标题，不写「报告称／报告显示」这类来源提示，也不写「最该记住／值得关注」这类元话术——
