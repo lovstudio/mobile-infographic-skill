@@ -303,6 +303,34 @@ class AuditScoringTests(unittest.TestCase):
         checks = self.audit(measurement)
         self.assertEqual(checks["series_page"]["status"], "fail")
 
+    def test_long_card_has_no_height_ceiling(self):
+        measurement = good_measurement()
+        measurement["canvas"]["ratio"] = "long"
+        measurement["canvas"]["h"] = 9600
+        checks, context = cli.audit_measurements(measurement, cli.RATIOS["long"], None, 2)
+        by_id = {check["id"]: check for check in checks}
+        self.assertEqual(by_id["long_height"]["status"], "pass")
+        self.assertIn("9600", by_id["long_height"]["detail"])
+        self.assertEqual(context["canvas_px"]["height"], 9600)
+
+    def test_bar_order_is_checked_per_chart_group(self):
+        measurement = good_measurement(bars=[
+            {"label": "监控", "value": 10, "group": 0},
+            {"label": "影响行动", "value": 9, "group": 0},
+            {"label": "阿里", "value": 15100, "group": 1},
+            {"label": "Moonshot", "value": 2300, "group": 1},
+        ])
+        checks = self.audit(measurement)
+        self.assertEqual(checks["bar_order"]["status"], "pass")
+
+    def test_bar_order_fails_inside_one_group(self):
+        measurement = good_measurement(bars=[
+            {"label": "监控", "value": 9, "group": 0},
+            {"label": "影响行动", "value": 10, "group": 0},
+        ])
+        checks = self.audit(measurement)
+        self.assertEqual(checks["bar_order"]["status"], "fail")
+
     def test_image_size_mismatch_fails(self):
         checks = self.audit(good_measurement(), image_px=(1080, 1440))
         self.assertEqual(checks["image_size"]["status"], "fail")

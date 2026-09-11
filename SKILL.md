@@ -1,7 +1,7 @@
 ---
 name: lov-mobile-infographic
 description: >
-  把结论、研究或对话整理成手机竖屏阅读的证据型信息图：默认一张 1080 宽、高度自适应的卡片（long），只在明确要求多张或内容确需分屏时才做系列；交付可编辑 HTML 与 2× PNG。Use when the user says “把这个内容做成手机能读的信息图”“出一张竖版信息图”，or asks to "turn this into a mobile infographic".
+  把结论或材料整理成手机竖屏阅读的证据型信息图：输出永远是一张 1080 宽的 long 自适应卡片，内容多就把图加长、不拆卡；只有明确要求多张才做系列。交付可编辑 HTML 与 2× PNG。Use when the user says “把这个内容做成手机能读的信息图”“出一张竖版信息图”，or asks to "turn this into a mobile infographic".
 license: MIT
 compatibility: >
   Portable Agent Skills format. Python 3.8+; PNG rendering requires Playwright
@@ -11,7 +11,7 @@ depends_on:
   - lov-branding-consistency
 metadata:
   author: skill-publisher
-  version: "0.9.1"
+  version: "0.10.0"
   card_standard: lovstudio/skill-card/v1
   content_class: microcopy
   tags:
@@ -70,11 +70,13 @@ extend any adjacent capability. The record distinguishes optional upstream and
 downstream handoffs from embedded Kit modules. Do not silently depend on a
 sibling Skill that is not shipped with this source.
 
-## 输出形态（默认）
+## 输出形态（只有一张图）
 
-默认交付**一张** `long` 卡片：宽度恒为 1080，高度由内容决定（下限 1.2× 宽，上限三个
-`3:4` 屏即 4320px）。矮内容不会被硬撑成固定比例，多内容也不必先被拆成系列。
-只有两种情况才改形态：用户明确要多张，或一张长卡超过三屏上限。固定比例（`3:4`/`4:5`/
+交付永远是**一张**卡：宽度恒为 1080，高度由内容决定（下限 1.2× 宽，**不设上限**）。
+内容多的时候不加张数，把这一张加长——「一图读懂」本身就是长图形态。长卡用小节组织：
+先给主排位（总览），再按领域分小节，每节一个小标题加一条细分割线，让读者在一张长图里
+仍然有段落感；全卡仍然只有一个判断。矮内容不会被硬撑成固定比例。只有用户明确要求多张时，
+才改用系列形态——系列是用户显式指定的例外，不是内容超长时的默认出口。固定比例（`3:4`/`4:5`/
 `9:16`/`1:1`）是给渠道适配用的可选参数，不是默认值。
 
 ## 观点、图形与文案红线
@@ -101,6 +103,9 @@ sibling Skill that is not shipped with this source.
    **不要使用内部备注**（备注是给作者看的，不是给读者的）。
 6. **口径要解释“这个数字怎么来的”**，不要用生造词。「71 人可表态」这种写法无效；正确写法是
    「依据过去一段时间的群聊记录自动分析，推断出每座城可能对应的成员，共 71 人」。
+7. **长卡可以长，但只能有一个判断。** 全卡保留唯一的 `data-claim`，小节标题、分组条形与口径行
+   都只给这个判断补证据。长卡允许放多个条形组（例如总览 + 分领域小节），每组在自己的
+   `.chart` 容器内按数值倒序；不同分母不要混进同一组。
 
 ## 对外可见红线（强制）
 
@@ -173,9 +178,9 @@ python3 "$SKILL_DIR/scripts/infographic_cli.py" --help
   it (「真正的信号不是票数，而是 88 个人的发言」) before drawing anything.
 - Decide the visual encoding of the main relationship (bar length, colour block, order).
   A flat list of rows is not an infographic.
-- Default to **one card**. Keep one argument per card; only split into a series when the
-  user asks for several cards or the content genuinely carries separate stories
-  (see `references/series-and-export.md`).
+- Always deliver **one card**: when the material grows, keep extending the same card instead of
+  adding cards. Keep one argument per card; only switch to a series when the user explicitly
+  asks for several cards (see `references/series-and-export.md`).
 
 ### Step 2: Build the evidence table before the visual
 
@@ -194,7 +199,7 @@ Pick exactly one template from `references/template-grammar.md`; when three or m
 items have to be rank-ordered, use `bar-ranking` so the ordering is read as length, not as prose.
 Default ratio is
 `long`: one card at 1080 width whose height follows the content (at least 1.2× width,
-at most three `3:4` screens). Switch to a fixed ratio only when the delivery surface
+no ceiling). Switch to a fixed ratio only when the delivery surface
 demands it — `3:4` for WeChat article embeds, `4:5` for feeds, `9:16` for full-screen
 story, `1:1` for grid tiles — and say which surface forced it.
 
@@ -283,17 +288,17 @@ because `audit.json` shows zero machine errors — the machine proxy is not proo
 
 ### Step 8: Series and export
 
-A single card is the default and needs no manifest. Only when the user asks for several cards,
-or one `long` card would pass three screens, scaffold each card with the same `--series-size`,
-write `manifest.json` from the case template, and verify that every card keeps the same width,
-safe area, and footer position. See `references/series-and-export.md`.
+A single card needs no manifest. Only when the user explicitly asks for several cards do you
+scaffold a series with the same `--series-size`, write `manifest.json` from the case template,
+and verify that every card keeps the same width, safe area, and footer position.
+See `references/series-and-export.md`.
 
 ### Step 9: Deliver
 
 Return clickable paths to the PNG, the editable HTML, `brief.md`, `source.md` and
-`audit.json` — plus `manifest.json` only for a series. State the template, ratio, evidence
-mode, proxy score, and human-review result. Disclose assumptions, omitted material, and any
-card that is still machine-only verified.
+`audit.json` — plus `manifest.json` only for a series (a single card never needs one). State the
+template, ratio, evidence mode, proxy score, and human-review result. Disclose assumptions,
+omitted material, and any card that is still machine-only verified.
 
 ## Dependencies
 

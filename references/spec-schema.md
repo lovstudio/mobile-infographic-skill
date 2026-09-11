@@ -56,9 +56,14 @@
 | `series_page` | warning | 页码与系列声明一致 |
 | `skeleton_replaced` | critical | 骨架文案已全部替换 |
 | `copy_volume` | warning | 可见文字量在 60 字以上 |
+| `bar_order` | error | 每个 `.chart` 分组内部条形按数值倒序 |
+| `long_height` | warning | `long` 单卡只记录高度与约合屏数，不设上限 |
+| `title_is_thesis` | warning | 标题是判断句而不是数字复述 |
+| `source_hygiene` | error | 卡面不含内部路径、库表名与账号标识 |
 
 ## 渲染契约
 
 - `render` 捕获 `[data-card]` 元素而非整页，返回 PNG 实际像素并与画布 × scale 比对。
 - 生成的 `card.html` 自带内联 CSS 与 data URL 形式的品牌 Logo，可离线打开。
 - `long` 比例由内容撑高，渲染前先测量元素高度再截图。
+- 一个长卡可以包含多个 `.chart` 分组（总览 + 分领域小节）；`bar_order` 在每个分组内分别校验。

@@ -69,8 +69,9 @@ RATIOS: dict[str, tuple[int, int]] = {
     "long": (1080, 0),
 }
 
-# `long` grows with the content; three 3:4 screens is the documented ceiling.
-LONG_MAX_HEIGHT = 1440 * 3
+# A single `long` card has no height ceiling: more content keeps extending the same card.
+# The 3:4 screen height is only used to report how many screens a card spans.
+SCREEN_3_4_HEIGHT = 1440
 
 SAFE_AREA = {"x": 88, "top": 96, "bottom": 96, "gap": 40}
 
@@ -536,13 +537,16 @@ MEASURE_JS = r"""
 
   const overflow = [];
   const bars = [];
+  const charts = Array.from(card.querySelectorAll('.chart'));
   card.querySelectorAll('.bar-row').forEach((row) => {
     const value = row.querySelector('.bar-value');
     const label = row.querySelector('.bar-label');
     const parsed = value ? parseFloat(value.textContent) : NaN;
+    const chart = row.closest('.chart');
     bars.push({
       label: label ? label.textContent.trim().slice(0, 40) : '',
       value: Number.isFinite(parsed) ? parsed : null,
+      group: chart ? charts.indexOf(chart) : -1,
     });
   });
 
@@ -753,21 +757,26 @@ def audit_measurements(m: dict[str, Any], ratio_expected: tuple[int, int] | None
                   f"PNG {image_px[0]}×{image_px[1]}，期望 {expected[0]}×{expected[1]}（scale {scale}，容差 1px）")
 
     if canvas["ratio"] == "long":
-        add_issue(checks, "long_height", "warning", canvas["h"] <= LONG_MAX_HEIGHT,
-                  f"长卡高度 {round(canvas['h'])}px（上限 {LONG_MAX_HEIGHT}px，即三个 3:4 屏；"
-                  "超出应先拆卡或删减）")
+        screens = canvas["h"] / SCREEN_3_4_HEIGHT
+        add_issue(checks, "long_height", "warning", True,
+                  f"长卡高度 {round(canvas['h'])}px（约 {screens:.1f} 个 3:4 屏）：单卡不设高度上限，"
+                  "内容多就继续加长同一张图，用章节小节维持阅读节奏")
 
     bars = [bar for bar in m.get("bars", []) if bar.get("value") is not None]
-    if len(bars) > 1:
-        ordered = all(
-            bars[index]["value"] >= bars[index + 1]["value"]
-            for index in range(len(bars) - 1)
-        )
-        add_issue(checks, "bar_order", "error", ordered,
-                  "条形按数值倒序排列" if ordered else
-                  "条形未按数值倒序："
-                  + " → ".join(f"{bar['label']} {bar['value']:g}" for bar in bars[:6])
-                  + "（排位图必须从大到小，读者靠长度和顺序同时读）")
+    groups: dict[Any, list[dict[str, Any]]] = {}
+    for bar in bars:
+        groups.setdefault(bar.get("group", 0), []).append(bar)
+    out_of_order = [
+        group for group in groups.values()
+        if any(group[index]["value"] < group[index + 1]["value"]
+               for index in range(len(group) - 1))
+    ]
+    add_issue(checks, "bar_order", "error", not out_of_order,
+              f"条形按数值倒序排列（{len(groups)} 个分组各自排序）" if not out_of_order else
+              "条形未按数值倒序："
+              + "; ".join(" → ".join(f"{bar['label']} {bar['value']:g}" for bar in group[:6])
+                          for group in out_of_order[:3])
+              + "（每个分组内部都要从大到小，读者靠长度和顺序同时读）")
 
     tiny = [
         entry for entry in m["text_entries"]

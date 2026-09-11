@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.10.0] - 2026-09-11
+
+### Changed
+
+- 输出契约改为「永远一张图」：内容再多也把这张 `long` 卡加长，不再因为超过三屏就拆系列；
+  系列只保留用户显式要求多张时的路径
+- `long_height` 从上限警告改为信息项：单卡不设高度上限，审计只记录实际高度与约合屏数
+- `bar_order` 改为按 `.chart` 分组分别校验倒序，支持长卡里的「总览 + 分领域小节」
+- docs：SKILL、README、reading standard、series-and-export、template-grammar、spec-schema 同步单卡契约
+
 ## [0.9.1] - 2026-09-11
 
 ### Fixed
