@@ -11,7 +11,7 @@ depends_on:
   - lov-branding-consistency
 metadata:
   author: skill-publisher
-  version: "0.10.0"
+  version: "0.11.0"
   card_standard: lovstudio/skill-card/v1
   content_class: microcopy
   tags:
@@ -106,6 +106,9 @@ sibling Skill that is not shipped with this source.
 7. **长卡可以长，但只能有一个判断。** 全卡保留唯一的 `data-claim`，小节标题、分组条形与口径行
    都只给这个判断补证据。长卡允许放多个条形组（例如总览 + 分领域小节），每组在自己的
    `.chart` 容器内按数值倒序；不同分母不要混进同一组。
+8. **长卡要还原来源的信息骨架。** 按来源自身的章节组织小节，每节给出它的要点、关键数字与代表
+   案例（谁、做了什么、规模），不能只给总排行和一句结论；来源里每个章节都要落到卡上，
+   内容放不下就继续加长这张图，不要靠删减细节收口。
 
 ## 对外可见红线（强制）
 
