@@ -870,8 +870,8 @@ def audit_measurements(m: dict[str, Any], ratio_expected: tuple[int, int] | None
                   for item in m["safe_violations"][:4]
               ))
 
-    add_issue(checks, "single_claim", "critical", counts["claims"] == 1,
-              f"data-claim 数量 {counts['claims']}（必须为 1）")
+    add_issue(checks, "single_claim", "critical", counts["claims"] <= 1,
+              f"data-claim 数量 {counts['claims']}（最多 1；不写作者总结时可以没有）")
 
     add_issue(checks, "evidence_linkage", "error",
               counts["sources"] >= 1 and counts["encodings"] == counts["encodings_linked"],

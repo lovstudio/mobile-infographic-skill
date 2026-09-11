@@ -295,6 +295,12 @@ class AuditScoringTests(unittest.TestCase):
         checks = self.audit(measurement)
         self.assertEqual(checks["single_claim"]["status"], "fail")
 
+    def test_no_claim_line_is_allowed(self):
+        measurement = good_measurement()
+        measurement["counts"]["claims"] = 0
+        checks = self.audit(measurement)
+        self.assertEqual(checks["single_claim"]["status"], "pass")
+
     def test_unlinked_encoding_fails_evidence_linkage(self):
         measurement = good_measurement()
         measurement["counts"]["encodings"] = 3
