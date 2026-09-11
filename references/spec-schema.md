@@ -57,6 +57,7 @@
 | `skeleton_replaced` | critical | 骨架文案已全部替换 |
 | `copy_volume` | warning | 可见文字量在 60 字以上 |
 | `bar_order` | error | 每个 `.chart` 分组内部条形按数值倒序 |
+| `bar_value` | error | 每行条形的数值可解析（以数字开头，单位写在数字后） |
 | `long_height` | warning | `long` 单卡只记录高度与约合屏数，不设上限 |
 | `title_is_thesis` | warning | 标题是判断句而不是数字复述 |
 | `source_hygiene` | error | 卡面不含内部路径、库表名与账号标识 |

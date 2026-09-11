@@ -777,6 +777,11 @@ def audit_measurements(m: dict[str, Any], ratio_expected: tuple[int, int] | None
                   "内容多就继续加长同一张图，用章节小节维持阅读节奏")
 
     bars = [bar for bar in m.get("bars", []) if bar.get("value") is not None]
+    unparsed = [bar for bar in m.get("bars", []) if bar.get("value") is None]
+    add_issue(checks, "bar_value", "error", not unparsed,
+              "条形数值可解析" if not unparsed else
+              "条形数值无法解析：" + "; ".join(f"「{bar['label']}」" for bar in unparsed[:4])
+              + "（数值必须以数字开头，例如「10 起」；单位写在数字后面）")
     groups: dict[Any, list[dict[str, Any]]] = {}
     for bar in bars:
         groups.setdefault(bar.get("group", 0), []).append(bar)

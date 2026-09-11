@@ -335,6 +335,13 @@ class AuditScoringTests(unittest.TestCase):
         checks = self.audit(measurement)
         self.assertEqual(checks["bar_order"]["status"], "fail")
 
+    def test_unparsed_bar_value_fails(self):
+        measurement = good_measurement(bars=[
+            {"label": "监控", "value": None, "group": 0},
+        ])
+        checks = self.audit(measurement)
+        self.assertEqual(checks["bar_value"]["status"], "fail")
+
     def test_image_size_mismatch_fails(self):
         checks = self.audit(good_measurement(), image_px=(1080, 1440))
         self.assertEqual(checks["image_size"]["status"], "fail")
